@@ -6,10 +6,11 @@
  * @flow strict-local
  */
 
-import {Button, StyleSheet, Text, View} from 'react-native';
+import {Button, StyleSheet, View} from 'react-native';
 
 import {BleManager} from 'react-native-ble-plx';
 import {Buffer} from 'buffer';
+import Chart from './Chart';
 import React from 'react';
 
 const bleManager = new BleManager();
@@ -20,7 +21,10 @@ const randomInt = () => {
   return Math.ceil(Math.random() * 1000);
 };
 
+const defaultData = [0, 0, 0, 200, -200, 20, -20, 0, 0, 0, 0, 0, 0];
+
 const App = () => {
+  const [data, setData] = React.useState(defaultData);
   const [disabled, setDisabled] = React.useState(false);
 
   const asyncHandleConnect = async (error, device) => {
@@ -61,6 +65,10 @@ const App = () => {
         Buffer.from(characteristic.value, 'base64').toString(),
       );
       console.log(`Parsed response: ${JSON.stringify(response)}`);
+
+      const {data} = response;
+      setData(data);
+      console.log('Updated chart');
     } catch (e) {
       console.log('Error');
     } finally {
@@ -78,6 +86,7 @@ const App = () => {
 
   return (
     <View style={styles.containerStyle}>
+      <Chart data={data} />
       <Button title="Click me!" onPress={handlePress} disabled={disabled} />
     </View>
   );
