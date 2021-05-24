@@ -6,11 +6,19 @@
  * @flow strict-local
  */
 
-import {Button, StyleSheet, View} from 'react-native';
+import {
+  Button,
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 
 import {BleManager} from 'react-native-ble-plx';
 import {Buffer} from 'buffer';
 import Chart from './Chart';
+import {Dimensions} from 'react-native';
 import React from 'react';
 
 const bleManager = new BleManager();
@@ -21,10 +29,13 @@ const randomInt = () => {
   return Math.ceil(Math.random() * 1000);
 };
 
-const defaultData = [0, 0, 0, 200, -200, 20, -20, 0, 0, 0, 0, 0, 0];
+const defaultPatient = {
+  pesel: '98073405591',
+  ekg: [0, 0, 0, 200, -200, 20, -20, 0, 0, 0, 0, 0, 0],
+};
 
 const App = () => {
-  const [data, setData] = React.useState(defaultData);
+  const [patient, setPatient] = React.useState(defaultPatient);
   const [disabled, setDisabled] = React.useState(false);
 
   const asyncHandleConnect = async (error, device) => {
@@ -66,9 +77,7 @@ const App = () => {
       );
       console.log(`Parsed response: ${JSON.stringify(response)}`);
 
-      const {data} = response;
-      setData(data);
-      console.log('Updated chart');
+      setPatient(response);
     } catch (e) {
       console.log('Error');
     } finally {
@@ -85,18 +94,68 @@ const App = () => {
   };
 
   return (
-    <View style={styles.containerStyle}>
-      <Chart data={data} />
-      <Button title="Click me!" onPress={handlePress} disabled={disabled} />
-    </View>
+    <SafeAreaView style={styles.safeAreaView}>
+      <StatusBar
+        animated={true}
+        backgroundColor="#111"
+        barStyle="light-content"
+      />
+      <View style={styles.container}>
+        <View style={styles.patientView}>
+          <Text style={styles.patientName}>Jan Kowalski</Text>
+          <Text style={styles.patientPesel}>PESEL: {patient.pesel}</Text>
+        </View>
+        <View style={styles.chartView}>
+          <Chart
+            data={patient.ekg}
+            width={Dimensions.get('window').width - 40}
+            height={200}
+          />
+        </View>
+        <View style={styles.optionsView}>
+          <View style={styles.buttonView}>
+            <Button
+              title="Odśwież"
+              onPress={handlePress}
+              disabled={disabled}
+              color="rgba(51, 193, 86, 0.6)"
+            />
+          </View>
+        </View>
+      </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  containerStyle: {
+  safeAreaView: {
     flex: 1,
+    backgroundColor: '#111',
+  },
+  container: {
+    marginVertical: 30,
+    marginHorizontal: 20,
+  },
+  patientView: {
+    marginBottom: 40,
+  },
+  patientName: {
+    color: 'white',
+    fontSize: 30,
+    fontWeight: 'bold',
+  },
+  patientPesel: {
+    color: 'darkgray',
+    fontSize: 15,
+  },
+  chartView: {
+    marginBottom: 20,
+  },
+  optionsView: {
     alignItems: 'center',
-    justifyContent: 'center',
+  },
+  buttonView: {
+    width: 100,
   },
 });
 

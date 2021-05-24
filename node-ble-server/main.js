@@ -10,11 +10,12 @@ var prevRequest = null;
 
 function processRequest(request) {
   const { min, max, length } = request;
-  const data = Array.from(
+  const pesel = Math.random().toFixed(11).split(".")[1];
+  const ekg = Array.from(
     { length },
     () => min + Math.floor(Math.random() * (max - min + 1))
   );
-  return { data };
+  return { pesel, ekg };
 }
 
 function onWriteRequest(data, offset, withoutResponse, callback) {
