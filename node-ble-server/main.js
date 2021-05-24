@@ -9,26 +9,30 @@ let Characteristic = bleno.Characteristic;
 var prevRequest = null;
 
 function processRequest(request) {
-  const { min, max } = request;
-  return { sum: min + max };
+  const { min, max, length } = request;
+  const data = Array.from(
+    { length },
+    () => min + Math.floor(Math.random() * (max - min + 1))
+  );
+  return { data };
 }
 
 function onWriteRequest(data, offset, withoutResponse, callback) {
-  const request = JSON.parse(data.toString("utf8"));
-  prevRequest = request;
-  console.log(request);
+  prevRequest = JSON.parse(data.toString("utf8"));
 
   callback(Characteristic.RESULT_SUCCESS);
 }
 
 function onReadRequest(offset, callback) {
   const response = processRequest(prevRequest);
-  console.log(response);
 
-  callback(
-    Characteristic.RESULT_SUCCESS,
-    Buffer.from(JSON.stringify(response), "ascii")
-  );
+  var data = Buffer.from(JSON.stringify(response), "ascii");
+
+  if (offset > data.length) {
+    callback(Characteristic.RESULT_INVALID_OFFSET, null);
+  } else {
+    callback(Characteristic.RESULT_SUCCESS, data.slice(offset));
+  }
 }
 
 let characteristic = new Characteristic({

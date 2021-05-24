@@ -21,6 +21,8 @@ const randomInt = () => {
 };
 
 const App = () => {
+  const [disabled, setDisabled] = React.useState(false);
+
   const asyncHandleConnect = async (error, device) => {
     if (error) {
       // TODO: handle Bluetooth adapter or Location off
@@ -32,14 +34,14 @@ const App = () => {
       await bleManager.stopDeviceScan();
       console.log('Stopped device scan');
 
-      await bleManager.connectToDevice(device.id);
+      await bleManager.connectToDevice(device.id, {requestMTU: 300});
       console.log('Connected to device');
 
       await device.discoverAllServicesAndCharacteristics();
       console.log('Discovered services and characteristics');
 
       const [min, max] = [randomInt(), randomInt()].sort();
-      const request = {min, max};
+      const request = {min, max, length: 50};
       console.log(`Generated request: ${JSON.stringify(request)}`);
 
       await device.writeCharacteristicWithResponseForService(
@@ -63,18 +65,20 @@ const App = () => {
       console.log('Error');
     } finally {
       await device.cancelConnection();
-      console.log('Cancelled connection');
+      console.log('Closed connection');
+      setDisabled(false);
     }
   };
 
   const handlePress = async () => {
+    setDisabled(true);
     await bleManager.startDeviceScan([serviceUUID], null, asyncHandleConnect);
     console.log('Started device scan');
   };
 
   return (
     <View style={styles.containerStyle}>
-      <Button title="Click me!" onPress={handlePress} />
+      <Button title="Click me!" onPress={handlePress} disabled={disabled} />
     </View>
   );
 };
