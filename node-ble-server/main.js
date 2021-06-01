@@ -3,21 +3,21 @@ let bleno = require("@abandonware/bleno");
 const serviceUUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
 const characteristicUUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8";
 const notifyInterval = 100;
-const name = "HELLO FRIEND";
+const name = "Bulbulator3000";
 
 let Characteristic = bleno.Characteristic;
 
 var prevRequest = null;
 
-function processRequest(request) {
-  const { min, max, length } = request;
-  const pesel = Math.random().toFixed(11).split(".")[1];
-  const ekg = Array.from(
-    { length },
-    () => min + Math.floor(Math.random() * (max - min + 1))
-  );
-  return { pesel, ekg };
-}
+// function processRequest(request) {
+//   const { min, max, length } = request;
+//   const pesel = Math.random().toFixed(11).split(".")[1];
+//   const ekg = Array.from(
+//     { length },
+//     () => min + Math.floor(Math.random() * (max - min + 1))
+//   );
+//   return { pesel, ekg };
+// }
 
 function onWriteRequest(data, offset, withoutResponse, callback) {
   prevRequest = JSON.parse(data.toString("utf8"));
@@ -26,7 +26,8 @@ function onWriteRequest(data, offset, withoutResponse, callback) {
 }
 
 function onReadRequest(offset, callback) {
-  const response = processRequest(prevRequest);
+  // const response = processRequest(prevRequest);
+  const response = {};
 
   var data = Buffer.from(JSON.stringify(response), "ascii");
 
