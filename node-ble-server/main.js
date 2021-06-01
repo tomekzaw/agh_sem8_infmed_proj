@@ -2,6 +2,7 @@ let bleno = require("@abandonware/bleno");
 
 const serviceUUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
 const characteristicUUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8";
+const notifyInterval = 100;
 const name = "HELLO FRIEND";
 
 let Characteristic = bleno.Characteristic;
@@ -36,6 +37,44 @@ function onReadRequest(offset, callback) {
   }
 }
 
+var isSubscribed = false;
+
+function onSubscribe(maxValueSize, updateValueCallback) {
+  isSubscribed = true;
+  loopNotify(updateValueCallback);
+  this._updateValueCallback = updateValueCallback;
+}
+
+function onUnsubscribe() {
+  isSubscribed = false;
+  this._updateValueCallback = null;
+}
+
+function* ekg_generator() {
+  while (true) {
+    for (let i = 0; i < 10; ++i) {
+      yield i;
+    }
+  }
+}
+
+const generator = ekg_generator();
+
+function notify(callback) {
+  const response = { value: generator.next().value };
+  const data = Buffer.from(JSON.stringify(response));
+  callback(data);
+}
+
+function loopNotify(callback) {
+  setTimeout(function () {
+    if (isSubscribed) {
+      notify(callback);
+      loopNotify(callback);
+    }
+  }, notifyInterval);
+}
+
 let characteristic = new Characteristic({
   uuid: characteristicUUID,
   properties: ["read", "write", "notify", "indicate"],
@@ -48,8 +87,8 @@ let characteristic = new Characteristic({
   ],
   onReadRequest: onReadRequest,
   onWriteRequest: onWriteRequest,
-  onSubscribe: null,
-  onUnsubscribe: null,
+  onSubscribe: onSubscribe,
+  onUnsubscribe: onUnsubscribe,
   onNotify: null,
   onIndicate: null,
 });

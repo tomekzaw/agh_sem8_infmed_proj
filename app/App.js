@@ -78,11 +78,31 @@ const App = () => {
       console.log(`Parsed response: ${JSON.stringify(response)}`);
 
       setPatient(response);
+
+      const subscription = characteristic.monitor(
+        async (error, characteristic) => {
+          console.log(`Monitoring device`);
+
+          if (error) {
+            console.log(`Error while monitoring device`);
+            console.log(JSON.stringify(error));
+            return;
+          }
+
+          const response = JSON.parse(
+            Buffer.from(characteristic.value, 'base64').toString(),
+          );
+          console.log(
+            `Notify: ${Buffer.from(characteristic.value, 'base64').toString()}`,
+          );
+        },
+      );
+      console.log(`Subscribed for notifications`);
     } catch (e) {
       console.log('Error');
     } finally {
-      await device.cancelConnection();
-      console.log('Closed connection');
+      // await device.cancelConnection();
+      // console.log('Closed connection');
       setDisabled(false);
     }
   };
