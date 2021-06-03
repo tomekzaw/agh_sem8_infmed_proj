@@ -4,7 +4,7 @@ import {BleManager} from 'react-native-ble-plx';
 import {Buffer} from 'buffer';
 import Chart from './Chart';
 import {Dimensions} from 'react-native';
-import React from 'react';
+import React, {useRef} from 'react';
 
 const bleManager = new BleManager();
 const serviceUUID = '4fafc201-1fb5-459e-8fcc-c5c9c331914b';
@@ -16,6 +16,8 @@ export function DetailsScreen({route, navigation}) {
   const deviceRef = React.useState(null);
   const subscriptionRef = React.useState(null);
   const [data, setData] = React.useState([1, 2, 3]);
+
+  const chartRef = useRef();
 
   const asyncConnect = async () => {
     try {
@@ -48,14 +50,17 @@ export function DetailsScreen({route, navigation}) {
             return;
           }
 
-          console.log(`Notification from ${device.id}`);
+          // console.log(`Notification from ${device.id}`);
           const response = JSON.parse(
             Buffer.from(characteristic.value, 'base64').toString(),
           );
-          setData(data => [
-            ...data.slice(Math.max(data.length - 20, 0)),
-            response.value,
-          ]);
+
+          chartRef.current.addPoints([]);
+
+          // setData(data => [
+          //   ...data.slice(Math.max(data.length - 20, 0)),
+          //   response.value,
+          // ]);
         },
       );
       console.log(`Subscribed for ${device.id}`);
@@ -84,7 +89,8 @@ export function DetailsScreen({route, navigation}) {
       <Text>name: {deviceName}</Text>
       <Text>id: {deviceId}</Text>
       <Chart
-        data={data}
+        ref={chartRef}
+        data={[]}
         width={Dimensions.get('window').width - 40}
         height={200}
       />
