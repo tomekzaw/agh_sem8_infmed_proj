@@ -1,10 +1,10 @@
-import React, {useRef} from 'react';
-import {SafeAreaView, StyleSheet, Text} from 'react-native';
+import {SafeAreaView, StyleSheet} from 'react-native';
 
 import {BleManager} from 'react-native-ble-plx';
 import {Buffer} from 'buffer';
+import {Button} from 'react-native-paper';
 import Chart from './Chart';
-import {Dimensions} from 'react-native';
+import React from 'react';
 
 const bleManager = new BleManager();
 const serviceUUID = '4fafc201-1fb5-459e-8fcc-c5c9c331914b';
@@ -13,7 +13,8 @@ const characteristicUUID = 'beb5483e-36e1-4688-b7f5-ea07361b26a8';
 export function DetailsScreen({route, navigation}) {
   const {deviceId, deviceName} = route.params;
 
-  const deviceRef = React.useState(null);
+  const chartRef = React.useRef();
+  const deviceRef = React.useState(null); // useRef!!!
   const subscriptionRef = React.useState(null);
   const [data, setData] = React.useState([1, 2, 3]);
 
@@ -80,9 +81,14 @@ export function DetailsScreen({route, navigation}) {
     navigation.setOptions({title: deviceName});
   }, [deviceName]);
 
+  const handlePress = () => {
+    chartRef.current?.addPoint();
+  };
+
   return (
     <SafeAreaView style={styles.safeAreaView}>
-      <Chart height={400} />
+      <Chart ref={chartRef} height={400} />
+      <Button onPress={handlePress}>Add point</Button>
     </SafeAreaView>
   );
 }

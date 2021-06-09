@@ -1,10 +1,8 @@
-import {StyleSheet, View} from 'react-native';
-
-import {Button} from 'react-native-paper';
 import ChartView from 'react-native-highcharts-wrapper';
 import React from 'react';
+import {View} from 'react-native';
 
-export default function Chart({height = 200}) {
+const Chart = React.forwardRef(({height = 200}, ref) => {
   const webviewRef = React.useRef();
 
   const Highcharts = 'Highcharts';
@@ -125,9 +123,11 @@ export default function Chart({height = 200}) {
     },
   };
 
-  const handlePress = () => {
+  const addPoint = () => {
     webviewRef.current?.injectJavaScript('addPoint(Math.random());');
   };
+
+  React.useImperativeHandle(ref, () => ({addPoint}));
 
   return (
     <View>
@@ -138,7 +138,8 @@ export default function Chart({height = 200}) {
         originWhitelist={['file://']}
         ref={webviewRef}
       />
-      <Button onPress={handlePress}>Add point</Button>
     </View>
   );
-}
+});
+
+export default Chart;
