@@ -51,7 +51,7 @@ const Chart = React.forwardRef(({height = 200}, ref) => {
         },
       ],
       min: 0,
-      max: 1,
+      max: 10,
     },
     tooltip: {
       formatter: function () {

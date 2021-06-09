@@ -15,8 +15,7 @@ export function DetailsScreen({route, navigation}) {
 
   const chartRef = React.useRef();
   const deviceRef = React.useRef(null);
-  const subscriptionRef = React.useState(null);
-  const [data, setData] = React.useState([1, 2, 3]);
+  const subscriptionRef = React.useRef(null);
 
   const asyncConnect = async () => {
     try {
@@ -54,10 +53,9 @@ export function DetailsScreen({route, navigation}) {
             Buffer.from(characteristic.value, 'base64').toString(),
           );
 
-          // setData(data => [
-          //   ...data.slice(Math.max(data.length - 20, 0)),
-          //   response.value,
-          // ]);
+          const x = new Date().getTime();
+          const y = response.value;
+          chartRef.current?.addPoint(x, y);
         },
       );
       console.log(`Subscribed for ${device.id}`);
