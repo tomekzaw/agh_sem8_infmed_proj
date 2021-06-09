@@ -1,10 +1,10 @@
+import React, {useRef} from 'react';
 import {SafeAreaView, StyleSheet, Text} from 'react-native';
 
 import {BleManager} from 'react-native-ble-plx';
 import {Buffer} from 'buffer';
 import Chart from './Chart';
 import {Dimensions} from 'react-native';
-import React, {useRef} from 'react';
 
 const bleManager = new BleManager();
 const serviceUUID = '4fafc201-1fb5-459e-8fcc-c5c9c331914b';
@@ -55,7 +55,7 @@ export function DetailsScreen({route, navigation}) {
             Buffer.from(characteristic.value, 'base64').toString(),
           );
 
-          chartRef.current.addPoints([]);
+          chartRef.current?.addPoints([]);
 
           // setData(data => [
           //   ...data.slice(Math.max(data.length - 20, 0)),
