@@ -2,11 +2,7 @@ import React, {useState} from 'react';
 const {forwardRef, useRef, useImperativeHandle} = React;
 import ChartView from 'react-native-highcharts-wrapper';
 
-const Chart = forwardRef(({data, width = 200, height = 150}, ref) => {
-  const [mySeries, setMySeries] = useState(null);
-
-  const testSeries = useRef();
-
+export default function Chart({data, width = 200, height = 150}) {
   const Highcharts = 'Highcharts';
   const conf = {
     chart: {
@@ -20,23 +16,20 @@ const Chart = forwardRef(({data, width = 200, height = 150}, ref) => {
       },
       events: {
         load: function () {
-          console.log('JESTEM TU');
-          console.log(this.series)
-          // let counter = 0;
-          // let now = new Date().getTime();
-          // const series = this.series[0];
-          setMySeries(this.series[0]);
+          let counter = 0;
+          let now = new Date().getTime();
+          const series = this.series[0];
 
-          // setInterval(function () {
-          //   for (let i = 0; i < 5; ++i) {
-          //     let x = now + counter * 500;
-          //     let y = Math.random();
-          //
-          //     let redraw = i === 4;
-          //     series.addPoint([x, y], redraw, true);
-          //     counter++;
-          //   }
-          // }, 400);
+          setInterval(function () {
+            for (let i = 0; i < 5; ++i) {
+              let x = now + counter * 500;
+              let y = Math.random();
+
+              let redraw = i === 4;
+              series.addPoint([x, y], redraw, true);
+              counter++;
+            }
+          }, 400);
         },
       },
     },
@@ -123,14 +116,6 @@ const Chart = forwardRef(({data, width = 200, height = 150}, ref) => {
     },
   };
 
-  useImperativeHandle(ref, () => ({
-    addPoints(points) {
-      // console.log('SIEMA');
-      // console.log(points);
-      // console.log(mySeries);
-    },
-  }));
-
   return (
     <ChartView
       style={{height: 300}}
@@ -139,6 +124,4 @@ const Chart = forwardRef(({data, width = 200, height = 150}, ref) => {
       originWhitelist={['file://']}
     />
   );
-});
-
-export default Chart;
+}

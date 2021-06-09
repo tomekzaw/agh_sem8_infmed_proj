@@ -17,8 +17,6 @@ export function DetailsScreen({route, navigation}) {
   const subscriptionRef = React.useState(null);
   const [data, setData] = React.useState([1, 2, 3]);
 
-  const chartRef = useRef();
-
   const asyncConnect = async () => {
     try {
       const device = await bleManager.connectToDevice(deviceId, {
@@ -55,8 +53,6 @@ export function DetailsScreen({route, navigation}) {
             Buffer.from(characteristic.value, 'base64').toString(),
           );
 
-          chartRef.current?.addPoints([]);
-
           // setData(data => [
           //   ...data.slice(Math.max(data.length - 20, 0)),
           //   response.value,
@@ -89,7 +85,6 @@ export function DetailsScreen({route, navigation}) {
       <Text>name: {deviceName}</Text>
       <Text>id: {deviceId}</Text>
       <Chart
-        ref={chartRef}
         data={[]}
         width={Dimensions.get('window').width - 40}
         height={200}
