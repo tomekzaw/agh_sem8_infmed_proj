@@ -1,23 +1,44 @@
 let bleno = require("@abandonware/bleno");
+let csvParser = require('csv-parser');
+let fs = require('fs');
 
 const serviceUUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
 const characteristicUUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8";
-const notifyInterval = 300;
+const notifyInterval = 100;
 const name = "Bulbulator3000";
+const filePath = 'ecg.data'
+
+let csvData = getEkgData()
+let csvDataOffset = 0
+const startTime =  new Date().getTime();
+const readBatchSize = 4
+const samplingFreq = 100
 
 let Characteristic = bleno.Characteristic;
 
 var prevRequest = null;
 
-// function processRequest(request) {
-//   const { min, max, length } = request;
-//   const pesel = Math.random().toFixed(11).split(".")[1];
-//   const ekg = Array.from(
-//     { length },
-//     () => min + Math.floor(Math.random() * (max - min + 1))
-//   );
-//   return { pesel, ekg };
-// }
+function getEkgData() {
+  let data = []
+
+  fs.createReadStream(filePath)
+    .pipe(csvParser())
+    .on('data', function(row){
+      try {
+        data.push(row)
+      }
+      catch(err) {
+        //error handler
+      }
+    })
+    .on('end',function(){
+      //some final operation
+    });
+
+  return data
+}
+
+
 
 function onWriteRequest(data, offset, withoutResponse, callback) {
   prevRequest = JSON.parse(data.toString("utf8"));
@@ -62,16 +83,14 @@ function* ekg_generator() {
 const generator = ekg_generator();
 
 function notify(callback) {
-  const batchSize = 5;
-
-  const time = new Date().getTime();
-
   const xs = []
   const ys = []
 
-  for(let i = 0; i < batchSize; ++i) {
-    let x = time + i * 1000;
-    let y = generator.next().value;
+  const end = csvDataOffset + readBatchSize
+
+  for(; csvDataOffset < end && csvDataOffset < csvData.length; ++csvDataOffset) {
+    let x = startTime + csvDataOffset * (1000/samplingFreq);
+    let y = csvData[csvDataOffset]['ECG'];
     xs.push(x)
     ys.push(y)
   }

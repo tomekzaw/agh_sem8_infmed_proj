@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@abandonware/bleno": "*"
+    "@abandonware/bleno": "0.5.1-4",
+    "csv-parser": "^3.0.0"
   }
 }

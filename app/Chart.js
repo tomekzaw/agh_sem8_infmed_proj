@@ -2,7 +2,7 @@ import ChartView from 'react-native-highcharts-wrapper';
 import React from 'react';
 import {View} from 'react-native';
 
-const Chart = React.forwardRef(({height = 200, maxPoints = 100}, ref) => {
+const Chart = React.forwardRef(({height = 200, maxPoints = 550}, ref) => {
   const webviewRef = React.useRef();
 
   let addedPoints = 0;
@@ -17,7 +17,7 @@ const Chart = React.forwardRef(({height = 200, maxPoints = 100}, ref) => {
       },
       marginRight: 10,
       scrollablePlotArea: {
-        minWidth: 2000,
+        minWidth: 1000,
         scrollPositionX: 1,
       },
       events: {
@@ -39,7 +39,7 @@ const Chart = React.forwardRef(({height = 200, maxPoints = 100}, ref) => {
     },
     xAxis: {
       type: 'datetime',
-      tickPixelInterval: 100,
+      tickPixelInterval: 50,
     },
     yAxis: {
       title: {
@@ -52,8 +52,8 @@ const Chart = React.forwardRef(({height = 200, maxPoints = 100}, ref) => {
           color: '#808080',
         },
       ],
-      min: 0,
-      max: 10,
+      min: -1,
+      max: 1,
     },
     tooltip: {
       formatter: function () {
