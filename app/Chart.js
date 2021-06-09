@@ -1,49 +1,50 @@
-import React, {useState} from 'react';
-const {forwardRef, useRef, useImperativeHandle} = React;
-import ChartView from 'react-native-highcharts-wrapper';
+import {StyleSheet, View} from 'react-native';
 
-export default function Chart({data, width = 200, height = 150}) {
+import {Button} from 'react-native-paper';
+import ChartView from 'react-native-highcharts-wrapper';
+import React from 'react';
+
+export default function Chart({height = 200}) {
+  const webviewRef = React.useRef();
+
   const Highcharts = 'Highcharts';
   const conf = {
     chart: {
+      backgroundColor: 'rgb(242,242,242)',
       type: 'line',
       animation: {
-        duration: 300,
+        duration: 100,
       },
       marginRight: 10,
       scrollablePlotArea: {
         minWidth: 2000,
+        scrollPositionX: 1,
       },
       events: {
         load: function () {
-          let counter = 0;
-          let now = new Date().getTime();
           const series = this.series[0];
 
-          setInterval(function () {
-            for (let i = 0; i < 5; ++i) {
-              let x = now + counter * 500;
-              let y = Math.random();
-
-              let redraw = i === 4;
-              series.addPoint([x, y], redraw, true);
-              counter++;
-            }
-          }, 400);
+          window.addPoint = y => {
+            const x = new Date().getTime();
+            series.addPoint([x, y], true, false);
+          };
         },
       },
     },
 
     title: {
-      text: 'Live random data',
+      text: '',
+    },
+    credits: {
+      enabled: false,
     },
     xAxis: {
       type: 'datetime',
-      tickPixelInterval: 150,
+      tickPixelInterval: 100,
     },
     yAxis: {
       title: {
-        text: 'Value',
+        text: '',
       },
       plotLines: [
         {
@@ -52,6 +53,8 @@ export default function Chart({data, width = 200, height = 150}) {
           color: '#808080',
         },
       ],
+      min: 0,
+      max: 1,
     },
     tooltip: {
       formatter: function () {
@@ -90,17 +93,23 @@ export default function Chart({data, width = 200, height = 150}) {
         name: 'Random data',
         data: (function () {
           // generate an array of random data
-          let randomData = [],
-            time = new Date().getTime(),
-            i;
+          // let randomData = [],
+          //   time = new Date().getTime(),
+          //   i;
 
-          for (i = -50; i <= 0; i += 1) {
-            randomData.push({
-              x: time + i * 1000,
-              y: Math.random(),
-            });
-          }
-          return randomData;
+          // for (i = -50; i <= 0; i += 1) {
+          //   randomData.push({
+          //     x: time + i * 1000,
+          //     y: Math.random(),
+          //   });
+          // }
+          // return randomData;
+          return [
+            // {
+            //   x: new Date().getTime(),
+            //   y: 0,
+            // },
+          ];
         })(),
       },
     ],
@@ -116,12 +125,20 @@ export default function Chart({data, width = 200, height = 150}) {
     },
   };
 
+  const handlePress = () => {
+    webviewRef.current?.injectJavaScript('addPoint(Math.random());');
+  };
+
   return (
-    <ChartView
-      style={{height: 300}}
-      config={conf}
-      options={options}
-      originWhitelist={['file://']}
-    />
+    <View>
+      <ChartView
+        style={{height}}
+        config={conf}
+        options={options}
+        originWhitelist={['file://']}
+        ref={webviewRef}
+      />
+      <Button onPress={handlePress}>Add point</Button>
+    </View>
   );
 }

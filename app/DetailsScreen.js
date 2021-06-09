@@ -82,13 +82,7 @@ export function DetailsScreen({route, navigation}) {
 
   return (
     <SafeAreaView style={styles.safeAreaView}>
-      <Text>name: {deviceName}</Text>
-      <Text>id: {deviceId}</Text>
-      <Chart
-        data={[]}
-        width={Dimensions.get('window').width - 40}
-        height={200}
-      />
+      <Chart height={400} />
     </SafeAreaView>
   );
 }
