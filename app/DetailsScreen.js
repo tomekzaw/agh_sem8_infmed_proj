@@ -47,14 +47,14 @@ export function DetailsScreen({route, navigation}) {
             return;
           }
 
-          // console.log(`Notification from ${device.id}`);
           const response = JSON.parse(
             Buffer.from(characteristic.value, 'base64').toString(),
           );
 
-          const x = new Date().getTime();
-          const y = response.value;
-          chartRef.current?.addPoint(x, y);
+          const xs = response.xs;
+          const ys = response.ys;
+
+          chartRef.current?.addPoints(xs, ys);
         },
       );
       console.log(`Subscribed for ${device.id}`);

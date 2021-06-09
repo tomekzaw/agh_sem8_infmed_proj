@@ -2,8 +2,10 @@ import ChartView from 'react-native-highcharts-wrapper';
 import React from 'react';
 import {View} from 'react-native';
 
-const Chart = React.forwardRef(({height = 200}, ref) => {
+const Chart = React.forwardRef(({height = 200, maxPoints = 100}, ref) => {
   const webviewRef = React.useRef();
+
+  let addedPoints = 0;
 
   const Highcharts = 'Highcharts';
   const conf = {
@@ -11,7 +13,7 @@ const Chart = React.forwardRef(({height = 200}, ref) => {
       backgroundColor: 'rgb(242,242,242)',
       type: 'line',
       animation: {
-        duration: 25,
+        duration: 5,
       },
       marginRight: 10,
       scrollablePlotArea: {
@@ -22,8 +24,8 @@ const Chart = React.forwardRef(({height = 200}, ref) => {
         load: function () {
           const series = this.series[0];
 
-          window.addPoint = (x, y) => {
-            series.addPoint([x, y], true, false);
+          window.addPoint = (x, y, rerender, shift = false) => {
+            series.addPoint([x, y], rerender, shift);
           };
         },
       },
@@ -101,11 +103,21 @@ const Chart = React.forwardRef(({height = 200}, ref) => {
     },
   };
 
-  const addPoint = (x, y) => {
-    webviewRef.current?.injectJavaScript(`addPoint(${x}, ${y});`);
+  const addPoints = (xs, ys) => {
+    for (let i = 0; i < xs.length; ++i) {
+      addedPoints += 1;
+      const x = xs[i];
+      const y = ys[i];
+
+      const shift = addedPoints >= maxPoints;
+      const rerender = i === xs.length - 1;
+      webviewRef.current?.injectJavaScript(
+        `addPoint(${x}, ${y}, ${rerender}, ${shift});`,
+      );
+    }
   };
 
-  React.useImperativeHandle(ref, () => ({addPoint}));
+  React.useImperativeHandle(ref, () => ({addPoints}));
 
   return (
     <View>
