@@ -14,7 +14,7 @@ export function DetailsScreen({route, navigation}) {
   const {deviceId, deviceName} = route.params;
 
   const chartRef = React.useRef();
-  const deviceRef = React.useState(null); // useRef!!!
+  const deviceRef = React.useRef(null);
   const subscriptionRef = React.useState(null);
   const [data, setData] = React.useState([1, 2, 3]);
 
