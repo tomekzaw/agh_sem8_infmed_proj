@@ -1,4 +1,5 @@
-import {List} from 'react-native-paper';
+import {ActivityIndicator, List} from 'react-native-paper';
+
 import React from 'react';
 
 export function DevicesList({devices, onPress = null}) {
@@ -7,7 +8,7 @@ export function DevicesList({devices, onPress = null}) {
       <List.Subheader>
         {devices.length
           ? `Found devices (${devices.length})`
-          : 'No devices found'}
+          : 'Scan in progress...'}
       </List.Subheader>
       {devices.map(device => (
         <List.Item
@@ -18,6 +19,7 @@ export function DevicesList({devices, onPress = null}) {
           onPress={() => onPress(device)}
         />
       ))}
+      {!devices.length && <ActivityIndicator animating={true} />}
     </List.Section>
   );
 }

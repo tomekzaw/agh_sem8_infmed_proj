@@ -1,5 +1,5 @@
+import {Alert, SafeAreaView} from 'react-native';
 import {List, Switch} from 'react-native-paper';
-import {SafeAreaView, View} from 'react-native';
 
 import {BleManager} from 'react-native-ble-plx';
 import {DeviceManager} from './DeviceManager';
@@ -48,8 +48,9 @@ export function HomeScreen({navigation}) {
 
   const asyncHandleConnect = async (error, device) => {
     if (error) {
-      // TODO: handle Bluetooth adapter or Location off
       console.log(JSON.stringify(error));
+      Alert.alert('Error', error.message);
+      setScanning(false);
       return;
     }
 
