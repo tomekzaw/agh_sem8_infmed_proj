@@ -11,7 +11,7 @@ const Chart = React.forwardRef(({height = 200}, ref) => {
       backgroundColor: 'rgb(242,242,242)',
       type: 'line',
       animation: {
-        duration: 100,
+        duration: 25,
       },
       marginRight: 10,
       scrollablePlotArea: {

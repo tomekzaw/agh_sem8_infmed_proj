@@ -2,7 +2,6 @@ import {SafeAreaView, StyleSheet} from 'react-native';
 
 import {BleManager} from 'react-native-ble-plx';
 import {Buffer} from 'buffer';
-import {Button} from 'react-native-paper';
 import Chart from './Chart';
 import React from 'react';
 
@@ -79,14 +78,9 @@ export function DetailsScreen({route, navigation}) {
     navigation.setOptions({title: deviceName});
   }, [deviceName]);
 
-  const handlePress = () => {
-    chartRef.current?.addPoint(new Date().getTime(), Math.random());
-  };
-
   return (
     <SafeAreaView style={styles.safeAreaView}>
       <Chart ref={chartRef} height={400} />
-      <Button onPress={handlePress}>Add point</Button>
     </SafeAreaView>
   );
 }
