@@ -82,7 +82,7 @@ export function DetailsScreen({route, navigation}) {
   }, [deviceName]);
 
   const handlePress = () => {
-    chartRef.current?.addPoint();
+    chartRef.current?.addPoint(new Date().getTime(), Math.random());
   };
 
   return (

@@ -22,8 +22,7 @@ const Chart = React.forwardRef(({height = 200}, ref) => {
         load: function () {
           const series = this.series[0];
 
-          window.addPoint = y => {
-            const x = new Date().getTime();
+          window.addPoint = (x, y) => {
             series.addPoint([x, y], true, false);
           };
         },
@@ -88,27 +87,6 @@ const Chart = React.forwardRef(({height = 200}, ref) => {
         marker: {
           enabled: false,
         },
-        name: 'Random data',
-        data: (function () {
-          // generate an array of random data
-          // let randomData = [],
-          //   time = new Date().getTime(),
-          //   i;
-
-          // for (i = -50; i <= 0; i += 1) {
-          //   randomData.push({
-          //     x: time + i * 1000,
-          //     y: Math.random(),
-          //   });
-          // }
-          // return randomData;
-          return [
-            // {
-            //   x: new Date().getTime(),
-            //   y: 0,
-            // },
-          ];
-        })(),
       },
     ],
   };
@@ -123,8 +101,8 @@ const Chart = React.forwardRef(({height = 200}, ref) => {
     },
   };
 
-  const addPoint = () => {
-    webviewRef.current?.injectJavaScript('addPoint(Math.random());');
+  const addPoint = (x, y) => {
+    webviewRef.current?.injectJavaScript(`addPoint(${x}, ${y});`);
   };
 
   React.useImperativeHandle(ref, () => ({addPoint}));
