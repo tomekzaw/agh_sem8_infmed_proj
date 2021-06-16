@@ -1,4 +1,4 @@
-import {SafeAreaView, StyleSheet} from 'react-native';
+import {SafeAreaView, StyleSheet, Text} from 'react-native';
 
 import {BleManager} from 'react-native-ble-plx';
 import {Buffer} from 'buffer';
@@ -16,7 +16,23 @@ export function DetailsScreen({route, navigation}) {
   const deviceRef = React.useRef(null);
   const subscriptionRef = React.useRef(null);
 
-  const asyncConnect = async () => {
+  const asyncMonitor = React.useCallback(async (error, characteristic) => {
+    if (error) {
+      console.log('Error while monitoring');
+      return;
+    }
+
+    const response = JSON.parse(
+      Buffer.from(characteristic.value, 'base64').toString(),
+    );
+
+    const xs = response.xs;
+    const ys = response.ys;
+
+    chartRef.current?.addPoints(xs, ys);
+  }, []);
+
+  const asyncConnect = React.useCallback(async () => {
     try {
       const device = await bleManager.connectToDevice(deviceId, {
         requestMTU: 512,
@@ -38,45 +54,28 @@ export function DetailsScreen({route, navigation}) {
       );
       console.log(`Read characteristic for ${device.id}`);
 
-      subscriptionRef.current = characteristic.monitor(
-        async (error, characteristic) => {
-          console.log(`Monitoring ${device.id}`);
-
-          if (error) {
-            console.log(`Error while monitoring ${device.id}`);
-            return;
-          }
-
-          const response = JSON.parse(
-            Buffer.from(characteristic.value, 'base64').toString(),
-          );
-
-          const xs = response.xs;
-          const ys = response.ys;
-
-          chartRef.current?.addPoints(xs, ys);
-        },
-      );
+      subscriptionRef.current = characteristic.monitor(asyncMonitor);
       console.log(`Subscribed for ${device.id}`);
     } catch (e) {
       console.log(`Error for ${deviceId}`);
       deviceRef.current = null;
     }
-  };
+  }, [deviceId, asyncMonitor]);
 
-  const asyncDisconnect = async () => {
-    await subscriptionRef.current?.remove();
-    await deviceRef.current?.cancelConnection();
-  };
+  const asyncDisconnect = React.useCallback(() => {
+    console.log('Cancelling subscription');
+    subscriptionRef.current?.remove();
+    deviceRef.current?.cancelConnection();
+  }, []);
 
   React.useEffect(() => {
     asyncConnect();
     return asyncDisconnect;
-  }, [deviceId]);
+  }, [deviceId, asyncConnect, asyncDisconnect]);
 
   React.useEffect(() => {
     navigation.setOptions({title: deviceName});
-  }, [deviceName]);
+  }, [deviceName, navigation]);
 
   return (
     <SafeAreaView style={styles.safeAreaView}>
