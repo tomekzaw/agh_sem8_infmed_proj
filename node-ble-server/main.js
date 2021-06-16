@@ -90,7 +90,7 @@ function notify(callback) {
 
   for(; csvDataOffset < end && csvDataOffset < csvData.length; ++csvDataOffset) {
     let x = startTime + csvDataOffset * (1000/samplingFreq);
-    let y = csvData[csvDataOffset]['ECG'];
+    let y = parseFloat(csvData[csvDataOffset]['ECG']);
     xs.push(x)
     ys.push(y)
   }
