@@ -20,7 +20,7 @@ For demonstration purposes, a IoMT device mock has been implemented as well in N
 ## Requirements
 
 - yarn 1.22.10
-- Node.js v12.16.1
+- Node.js 16.1.0
 - Android: NDK 21.3.6528147
 - iOS: XCode 12.5, CocoaPods 1.10.1
 
