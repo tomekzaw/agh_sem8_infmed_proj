@@ -1,10 +1,4 @@
-import {
-  Platform,
-  SafeAreaView,
-  StyleSheet,
-  ToastAndroid,
-  View,
-} from 'react-native';
+import {Alert, Platform, SafeAreaView, StyleSheet, View} from 'react-native';
 
 import {BleManager} from 'react-native-ble-plx';
 import {Buffer} from 'buffer';
@@ -96,7 +90,6 @@ export function DetailsScreen({route, navigation}) {
   const handleStartRecording = React.useCallback(() => {
     recordingRef.current = {xs: [], ys: []};
     setRecording(true);
-    ToastAndroid.show('Recording started', ToastAndroid.SHORT);
   }, []);
 
   const handleStopRecording = React.useCallback(async () => {
@@ -119,7 +112,7 @@ export function DetailsScreen({route, navigation}) {
       console.log(err.message);
     }
     setRecordingPath(path);
-    ToastAndroid.show(`Recording saved as ${filename}`, ToastAndroid.SHORT);
+    Alert.alert('Success', `Recording has been saved as ${filename}`);
   }, []);
 
   const handleShare = React.useCallback(async () => {
@@ -131,40 +124,75 @@ export function DetailsScreen({route, navigation}) {
     }
   }, [recordingPath]);
 
+  const handleConfirmRemove = React.useCallback(async () => {
+    Alert.alert(
+      'Confirm',
+      'Do you really want to delete the recording?',
+      [
+        {text: 'Cancel', style: 'cancel', onPress: () => {}},
+        {text: 'OK', onPress: removeRecording},
+      ],
+      {cancelable: true, onDismiss: () => {}},
+    );
+  }, [removeRecording]);
+
+  const removeRecording = React.useCallback(async () => {
+    try {
+      await RNFS.unlink(recordingPath);
+    } catch (err) {
+      console.log(err.message);
+    }
+
+    Alert.alert('Success', 'Recording has been deleted');
+    setRecordingPath(null);
+  }, [recordingPath]);
+
   return (
     <SafeAreaView style={styles.safeAreaView}>
       <View style={styles.graphView}>
-        <Chart ref={chartRef} height={400} />
+        <Chart ref={chartRef} height={380} />
       </View>
-      <View style={styles.recordingView}>
-        <View style={styles.cellView}>
+      <View style={styles.buttonsView}>
+        <View style={styles.buttonView}>
           <Button
             mode="contained"
             icon="record"
-            color="red"
+            color="dodgerblue"
             onPress={handleStartRecording}
-            disabled={recording}>
+            disabled={recording || recordingPath}>
             Record
           </Button>
         </View>
-        <View style={styles.cellView}>
+        <View style={styles.buttonView}>
           <Button
             mode="contained"
             icon="stop"
             color="black"
             onPress={handleStopRecording}
-            disabled={!recording}>
+            disabled={!recording || recordingPath}>
             Stop
           </Button>
         </View>
-        <View style={styles.cellView}>
+      </View>
+      <View style={styles.buttonsView}>
+        <View style={styles.buttonView}>
           <Button
             mode="contained"
             icon="share"
-            color="blue"
+            color="lightgreen"
             onPress={handleShare}
             disabled={!recordingPath}>
             Share
+          </Button>
+        </View>
+        <View style={styles.buttonView}>
+          <Button
+            mode="contained"
+            icon="delete"
+            color="lightcoral"
+            onPress={handleConfirmRemove}
+            disabled={!recordingPath}>
+            Remove
           </Button>
         </View>
       </View>
@@ -179,12 +207,12 @@ const styles = StyleSheet.create({
   graphView: {
     paddingVertical: 16,
   },
-  recordingView: {
+  buttonsView: {
     flexDirection: 'row',
     padding: 8,
   },
-  cellView: {
+  buttonView: {
     flex: 1,
-    padding: 8,
+    paddingHorizontal: 8,
   },
 });
