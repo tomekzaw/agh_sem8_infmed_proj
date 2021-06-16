@@ -93,8 +93,6 @@ export function DetailsScreen({route, navigation}) {
   }, []);
 
   const handleStopRecording = React.useCallback(async () => {
-    setRecording(false);
-
     const xs = recordingRef.current.xs;
     const ys = recordingRef.current.ys;
     const rows = xs.map((x, i) => `${x},${ys[i]}`);
@@ -112,6 +110,7 @@ export function DetailsScreen({route, navigation}) {
       console.log(err.message);
     }
     setRecordingPath(path);
+    setRecording(false);
     Alert.alert('Success', `Recording has been saved as ${filename}`);
   }, []);
 
