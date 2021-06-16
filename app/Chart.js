@@ -5,8 +5,6 @@ import {View} from 'react-native';
 const Chart = React.forwardRef(({height = 200, maxPoints = 550}, ref) => {
   const webviewRef = React.useRef();
 
-  let addedPoints = 0;
-
   const Highcharts = 'Highcharts';
   const conf = {
     chart: {
@@ -24,8 +22,15 @@ const Chart = React.forwardRef(({height = 200, maxPoints = 550}, ref) => {
         load: function () {
           const series = this.series[0];
 
-          window.addPoint = (x, y, rerender, shift = false) => {
-            series.addPoint([x, y], rerender, shift);
+          window.pointsList = [];
+
+          window.addPoints = (newPoints, maxPoints) => {
+            window.pointsList.push.apply(window.pointsList, newPoints);
+            if (window.pointsList.length > maxPoints) {
+              window.pointsList.splice(0, window.pointsList.length - maxPoints);
+            }
+
+            series.setData(window.pointsList, true, false, false);
           };
         },
       },
@@ -39,7 +44,7 @@ const Chart = React.forwardRef(({height = 200, maxPoints = 550}, ref) => {
     },
     xAxis: {
       type: 'datetime',
-      tickPixelInterval: 50,
+      tickPixelInterval: 200,
     },
     yAxis: {
       title: {
@@ -104,17 +109,20 @@ const Chart = React.forwardRef(({height = 200, maxPoints = 550}, ref) => {
   };
 
   const addPoints = (xs, ys) => {
+    const newList = [];
+
     for (let i = 0; i < xs.length; ++i) {
-      addedPoints += 1;
       const x = xs[i];
       const y = ys[i];
 
-      const shift = addedPoints >= maxPoints;
-      const rerender = i === xs.length - 1;
-      webviewRef.current?.injectJavaScript(
-        `addPoint(${x}, ${y}, ${rerender}, ${shift});`,
-      );
+      newList.push([x, y]);
     }
+
+    const points = newList.map(([x, y]) => `[${x},${y}]`).join(',');
+
+    webviewRef.current?.injectJavaScript(
+      `addPoints([${points}], ${maxPoints}); void(0);`,
+    );
   };
 
   React.useImperativeHandle(ref, () => ({addPoints}));
