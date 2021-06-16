@@ -27,6 +27,7 @@ export function DetailsScreen({route, navigation}) {
   const subscriptionRef = React.useRef(null);
 
   const [recording, setRecording] = React.useState(false);
+  const [recordingPath, setRecordingPath] = React.useState(null);
 
   const asyncMonitor = React.useCallback(async (error, characteristic) => {
     if (error) {
@@ -107,25 +108,34 @@ export function DetailsScreen({route, navigation}) {
     const header = 'x,y';
     const csv = [header, ...rows].join('\n');
 
-    const filename = `iomt_${Date.now()}.csv`;
+    const now = new Date().toISOString();
+    const date = now.substring(0, 10);
+    const time = now.substring(11, 19).split(':').join('-');
+    const filename = `iomt_${date}_${time}.csv`;
     const path = RNFS.DocumentDirectoryPath + '/' + filename;
     try {
       await RNFS.writeFile(path, csv, 'utf8');
     } catch (err) {
       console.log(err.message);
     }
+    setRecordingPath(path);
+    ToastAndroid.show(`Recording saved as ${filename}`, ToastAndroid.SHORT);
+  }, []);
 
+  const handleShare = React.useCallback(async () => {
     const prefix = Platform.OS === 'android' ? 'file://' : '';
     try {
-      await Share.open({url: prefix + path});
+      await Share.open({url: prefix + recordingPath});
     } catch (err) {
       console.log(err);
     }
-  }, []);
+  }, [recordingPath]);
 
   return (
     <SafeAreaView style={styles.safeAreaView}>
-      <Chart ref={chartRef} height={400} />
+      <View style={styles.graphView}>
+        <Chart ref={chartRef} height={400} />
+      </View>
       <View style={styles.recordingView}>
         <View style={styles.cellView}>
           <Button
@@ -147,6 +157,16 @@ export function DetailsScreen({route, navigation}) {
             Stop
           </Button>
         </View>
+        <View style={styles.cellView}>
+          <Button
+            mode="contained"
+            icon="share"
+            color="blue"
+            onPress={handleShare}
+            disabled={!recordingPath}>
+            Share
+          </Button>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -155,6 +175,9 @@ export function DetailsScreen({route, navigation}) {
 const styles = StyleSheet.create({
   safeAreaView: {
     flex: 1,
+  },
+  graphView: {
+    paddingVertical: 16,
   },
   recordingView: {
     flexDirection: 'row',
