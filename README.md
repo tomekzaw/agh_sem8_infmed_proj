@@ -67,36 +67,36 @@ node main.js
 
 Once the switch is toggled, the app will start scanning for IoMT devices nearby.
 
-![](docs/screenshots/Scan-in-progress.png)
+<img src="docs/screenshots/Scan-in-progress.png" alt="" width="300" />
 
 When any device is detected, its name and identifier will be visible.
 
-![](docs/screenshots/HomeScreen.png)
+<img src="docs/screenshots/HomeScreen.png" alt="" width="300" />
 
 If Bluetooth adapter is turned off, the following alert will show up.
 
-![](docs/screenshots/Ble-turn-off.png)
+<img src="docs/screenshots/Ble-turn-off.png" alt="" width="300" />
 
 When a device is selected, the connection will be established and the app will read the signal from the device.
 
-![](docs/screenshots/Plot.png)
+<img src="docs/screenshots/Plot.png" alt="" width="300" />
 
 You may start recording anytime.
 
-![](docs/screenshots/Recording.png)
+<img src="docs/screenshots/Recording.png" alt="" width="300" />
 
 Once you stop the recording, the data will be saved to a file `iomt_{date}_{time}.csv` on your device.
 
-![](docs/screenshots/SavedRecording.png)
+<img src="docs/screenshots/SavedRecording.png" alt="" width="300" />
 
 Then it is possible to share the file using native sharing functionality of your device's operating system.
 
-![](docs/screenshots/Share-Middle.png)
+<img src="docs/screenshots/Share-Middle.png" alt="" width="300" />
 
 When deleting the recording, the app will ask you to confirm.
 
-![](docs/screenshots/Delete-Confirm.png)
+<img src="docs/screenshots/Delete-Confirm.png" alt="" width="300" />
 
 Once the file is deleted, the success message will show up.
 
-![](docs/screenshots/Delete-Success.png)
+<img src="docs/screenshots/Delete-Success.png" alt="" width="300" />
