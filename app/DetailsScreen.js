@@ -1,7 +1,8 @@
-import {SafeAreaView, StyleSheet, Text} from 'react-native';
+import {SafeAreaView, StyleSheet, ToastAndroid, View} from 'react-native';
 
 import {BleManager} from 'react-native-ble-plx';
 import {Buffer} from 'buffer';
+import {Button} from 'react-native-paper';
 import Chart from './Chart';
 import React from 'react';
 
@@ -13,8 +14,11 @@ export function DetailsScreen({route, navigation}) {
   const {deviceId, deviceName} = route.params;
 
   const chartRef = React.useRef();
+  const recordingRef = React.useRef({xs: [], ys: []});
   const deviceRef = React.useRef(null);
   const subscriptionRef = React.useRef(null);
+
+  const [recording, setRecording] = React.useState(false);
 
   const asyncMonitor = React.useCallback(async (error, characteristic) => {
     if (error) {
@@ -28,6 +32,9 @@ export function DetailsScreen({route, navigation}) {
 
     const xs = response.xs;
     const ys = response.ys;
+
+    recordingRef.current.xs.push(...xs);
+    recordingRef.current.ys.push(...ys);
 
     chartRef.current?.addPoints(xs, ys);
   }, []);
@@ -77,9 +84,48 @@ export function DetailsScreen({route, navigation}) {
     navigation.setOptions({title: deviceName});
   }, [deviceName, navigation]);
 
+  const handleStartRecording = React.useCallback(() => {
+    recordingRef.current = {xs: [], ys: []};
+    setRecording(true);
+    ToastAndroid.show('Recording started', ToastAndroid.SHORT);
+  }, []);
+
+  const handleStopRecording = React.useCallback(() => {
+    setRecording(false);
+    const xs = recordingRef.current.xs;
+    const ys = recordingRef.current.ys;
+    const rows = xs.map((x, i) => `${x},${ys[i]}`);
+    const header = 'x,y';
+    const csv = [header, ...rows].join('\n');
+    console.log(csv);
+    ToastAndroid.show('Recording saved', ToastAndroid.SHORT);
+  }, []);
+
   return (
     <SafeAreaView style={styles.safeAreaView}>
       <Chart ref={chartRef} height={400} />
+      <View style={styles.recordingView}>
+        <View style={styles.cellView}>
+          <Button
+            mode="contained"
+            icon="record"
+            color="red"
+            onPress={handleStartRecording}
+            disabled={recording}>
+            Record
+          </Button>
+        </View>
+        <View style={styles.cellView}>
+          <Button
+            mode="contained"
+            icon="stop"
+            color="black"
+            onPress={handleStopRecording}
+            disabled={!recording}>
+            Stop
+          </Button>
+        </View>
+      </View>
     </SafeAreaView>
   );
 }
@@ -87,5 +133,13 @@ export function DetailsScreen({route, navigation}) {
 const styles = StyleSheet.create({
   safeAreaView: {
     flex: 1,
+  },
+  recordingView: {
+    flexDirection: 'row',
+    padding: 8,
+  },
+  cellView: {
+    flex: 1,
+    padding: 8,
   },
 });
