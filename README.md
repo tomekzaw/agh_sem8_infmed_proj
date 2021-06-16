@@ -1,12 +1,14 @@
 # IoMT app
 
-This app:
+This app has been implemented as a project for "Medical informatics" course on AGH University of Science and Technology.
 
-- scans for IoMT devices using Bluetooth Low Energy (BLE),
-- establishes a connection with selected device,
-- gathers medical signals from IoMT devices in realtime,
-- records the signal and saves data in device's filesystem,
-- sends recordings using operating system sharing functionality.
+Currently the following functionalities are covered:
+
+- scanning for IoMT devices using Bluetooth Low Energy (BLE),
+- establishing a connection with selected device,
+- gathering medical signals from IoMT devices in realtime,
+- recording the signal and saves data in device's filesystem,
+- sending recordings using operating system sharing functionality.
 
 For demonstration purposes, a BLE mock for MacOS has been implemented, which transmits a pre-recorded ECG signal.
 
