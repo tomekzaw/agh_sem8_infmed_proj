@@ -1,10 +1,18 @@
-import {SafeAreaView, StyleSheet, ToastAndroid, View} from 'react-native';
+import {
+  Platform,
+  SafeAreaView,
+  StyleSheet,
+  ToastAndroid,
+  View,
+} from 'react-native';
 
 import {BleManager} from 'react-native-ble-plx';
 import {Buffer} from 'buffer';
 import {Button} from 'react-native-paper';
 import Chart from './Chart';
+import RNFS from 'react-native-fs';
 import React from 'react';
+import Share from 'react-native-share';
 
 const bleManager = new BleManager();
 const serviceUUID = '4fafc201-1fb5-459e-8fcc-c5c9c331914b';
@@ -90,15 +98,29 @@ export function DetailsScreen({route, navigation}) {
     ToastAndroid.show('Recording started', ToastAndroid.SHORT);
   }, []);
 
-  const handleStopRecording = React.useCallback(() => {
+  const handleStopRecording = React.useCallback(async () => {
     setRecording(false);
+
     const xs = recordingRef.current.xs;
     const ys = recordingRef.current.ys;
     const rows = xs.map((x, i) => `${x},${ys[i]}`);
     const header = 'x,y';
     const csv = [header, ...rows].join('\n');
-    console.log(csv);
-    ToastAndroid.show('Recording saved', ToastAndroid.SHORT);
+
+    const filename = `iomt_${Date.now()}.csv`;
+    const path = RNFS.DocumentDirectoryPath + '/' + filename;
+    try {
+      await RNFS.writeFile(path, csv, 'utf8');
+    } catch (err) {
+      console.log(err.message);
+    }
+
+    const prefix = Platform.OS === 'android' ? 'file://' : '';
+    try {
+      await Share.open({url: prefix + path});
+    } catch (err) {
+      console.log(err);
+    }
   }, []);
 
   return (
