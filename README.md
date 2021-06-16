@@ -65,6 +65,12 @@ node main.js
 
 ## Demo
 
+Click below, to see recorded video of our application:
+
+[youtube link](http://www.youtube.com/watch?v=c5qWgkflI20)
+
+[![IoMT app demo](http://img.youtube.com/vi/c5qWgkflI20/0.jpg)](http://www.youtube.com/watch?v=c5qWgkflI20 "IoMT app demo")
+
 Once the switch is toggled, the app will start scanning for IoMT devices nearby.
 
 ![](docs/screenshots/Scan-in-progress.png)
