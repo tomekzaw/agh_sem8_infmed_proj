@@ -26,13 +26,19 @@ For demonstration purposes, a IoMT device mock has been implemented as well in N
 
 ## Dependencies
 
+### React Native app
+
 - [react-native](https://github.com/facebook/react-native)
 - [react-native-ble-plx](https://github.com/Polidea/react-native-ble-plx)
 - [react-native-paper](https://github.com/callstack/react-native-paper)
 - [react-native-fs](https://github.com/itinance/react-native-fs)
-- [react-navigation](https://github.com/react-navigation/react-navigation)
 - [react-native-share](https://github.com/react-native-share/react-native-share)
 - [react-native-highcharts-wrapper](https://github.com/socrypto/react-native-highcharts-wrapper) (see [pull request](https://github.com/socrypto/react-native-highcharts-wrapper/pull/7)).
+- [react-navigation](https://github.com/react-navigation/react-navigation)
+
+### IoMT BLE mock
+
+- [bleno](https://github.com/abandonware/bleno)
 
 ## Installation
 
