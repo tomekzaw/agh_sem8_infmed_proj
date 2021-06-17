@@ -40,6 +40,8 @@ For demonstration purposes, a IoMT device mock has been implemented as well in N
 
 - [bleno](https://github.com/abandonware/bleno)
 
+<div style="page-break-after: always;"></div>
+
 ## Installation
 
 ### React Native app
@@ -80,6 +82,7 @@ yarn react-native run-ios
 cd node-ble-server
 node main.js
 ```
+<div style="page-break-after: always;"></div>
 
 ## Implementation
 
@@ -100,10 +103,13 @@ It took us a few moments to realize that the plot could only be accessed from th
 
 As the last step, we added support for signal recording and appropriate UI controls. The application was originally indended to send recordings to the cloud, but we proposed an alternative approach. When the recording is stopped, the data is saved as an CSV file in the device's filesystem using [react-native-fs](https://github.com/itinance/react-native-fs) library. Using native sharing functionality of operating system, the file can be sent as an attachment via e-mail or uploaded to a cloud drive using a third-party application of user's choice. Having issues with sharing files on Android using original React Native Share API, we switched to [react-native-share](https://github.com/react-native-share/react-native-share) which works perfectly on both platforms.
 
+
 ## Further improvements
 
 - Increase MTU for notifications
 - Use binary protocol instead of JSON
+
+<div style="page-break-after: always;"></div>
 
 ## Demo
 
@@ -111,42 +117,52 @@ Click below to see the recorded video of our application:
 
 [YouTube link](http://www.youtube.com/watch?v=c5qWgkflI20)
 
-[![IoMT app demo](http://img.youtube.com/vi/c5qWgkflI20/0.jpg)](http://www.youtube.com/watch?v=c5qWgkflI20 "IoMT app demo")
+<a href="http://www.youtube.com/watch?v=c5qWgkflI20">
+    <img src="http://img.youtube.com/vi/c5qWgkflI20/0.jpg" alt="IoMT app demo" width="460">
+</a>
 
 Once the switch is toggled, the app will start scanning for IoMT devices nearby.
 
-<img src="docs/screenshots/Scan-in-progress.png" alt="" width="300" />
+<img src="docs/screenshots/Scan-in-progress.png" alt="" width="265" />
+
+<div style="page-break-after: always;"></div>
 
 When any device is detected, its name and identifier will be visible.
 
-<img src="docs/screenshots/HomeScreen.png" alt="" width="300" />
+<img src="docs/screenshots/HomeScreen.png" alt="" width="265" />
 
 If Bluetooth adapter is turned off, the following alert will show up.
 
 **Note:** On Android it is also necessary to enable location services.
 
-<img src="docs/screenshots/Ble-turn-off.png" alt="" width="300" />
+<img src="docs/screenshots/Ble-turn-off.png" alt="" width="265" />
+
+<div style="page-break-after: always;"></div>
 
 When a device is selected, the connection will be established and the app will read the signal from the device.
 
-<img src="docs/screenshots/Plot.png" alt="" width="300" />
+<img src="docs/screenshots/Plot.png" alt="" width="265" />
 
 You may start recording anytime.
 
-<img src="docs/screenshots/Recording.png" alt="" width="300" />
+<img src="docs/screenshots/Recording.png" alt="" width="265" />
+
+<div style="page-break-after: always;"></div>
 
 Once you stop the recording, the data will be saved to a file `iomt_{date}_{time}.csv` on your device.
 
-<img src="docs/screenshots/SavedRecording.png" alt="" width="300" />
+<img src="docs/screenshots/SavedRecording.png" alt="" width="265" />
 
 Then it is possible to share the file using native sharing functionality of your device's operating system.
 
-<img src="docs/screenshots/Share-Middle.png" alt="" width="300" />
+<img src="docs/screenshots/Share-Middle.png" alt="" width="265" />
+
+<div style="page-break-after: always;"></div>
 
 When deleting the recording, the app will ask you to confirm.
 
-<img src="docs/screenshots/Delete-Confirm.png" alt="" width="300" />
+<img src="docs/screenshots/Delete-Confirm.png" alt="" width="265" />
 
 Once the file is deleted, the success message will show up.
 
-<img src="docs/screenshots/Delete-Success.png" alt="" width="300" />
+<img src="docs/screenshots/Delete-Success.png" alt="" width="265" />
