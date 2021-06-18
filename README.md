@@ -1,6 +1,6 @@
 # IoMT app
 
-**This project has been realised as final assignment for "Medical Informatics" course on AGH University of Science and Technology.**
+**This project has been realised as the final assignment for "Medical Informatics" course on AGH University of Science and Technology.**
 
 The mobile app has been implemented in React Native and currently it covers the following functionalities:
 
@@ -10,7 +10,7 @@ The mobile app has been implemented in React Native and currently it covers the 
 - recording the signal and saving data in device's filesystem,
 - sending recordings using operating system sharing functionality.
 
-For demonstration purposes, a IoMT device mock has been implemented as well in Node.js. Once the Bluetooth LE connection is established, it transmits a pre-recorded ECG signal in batches.
+For demonstration purposes, an IoMT device mock has been implemented as well in Node.js. Once the Bluetooth LE connection is established, it transmits a pre-recorded ECG signal in batches.
 
 ## Authors
 
